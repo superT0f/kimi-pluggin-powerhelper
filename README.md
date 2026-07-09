@@ -95,16 +95,17 @@ Check the plugin diagnostics:
 
 A correct install shows no manifest errors.
 
-## `hi-there` daily dashboard
+## `hi-there` daily dashboard + Phrase of the Day game
 
 A terminal dashboard that shows:
 
 - an ASCII meme;
 - the current weather in Combs-la-Ville (customizable);
 - a short list of public news headlines;
-- a 24-hour local cache to avoid repeated network calls.
+- a 24-hour local cache to avoid repeated network calls;
+- the **Phrase of the Day** mini-game.
 
-### Usage
+### Dashboard usage
 
 ```text
 /powerhelper:hi-there
@@ -122,14 +123,42 @@ To use a different location:
 /skill:hi-there Paris
 ```
 
+### Phrase of the Day game
+
+Each day the Skill asks:
+
+1. "What was yesterday's phrase?"
+2. "What will tomorrow's phrase be?"
+
+If you remember yesterday's phrase, your streak increases and your win is recorded in `.data/hall-of-fame.md`.
+
+#### First day
+
+On the first run, the game is explained in English and you are asked to set tomorrow's phrase directly.
+
+#### Example flow
+
+```text
+good morning
+# dashboard + "What was yesterday's phrase?"
+
+the early bird catches the worm
+# "Correct! Streak: 3" + "What will tomorrow's phrase be?"
+
+a journey of a thousand miles begins with a single step
+# "Tomorrow's phrase is set. See you tomorrow!"
+```
+
 ### Requirements
 
 - Python 3 must be installed and on `PATH`.
-- Network access to `wttr.in` and `feeds.bbci.co.uk` (only on the first run of the day, or when the cache is stale).
+- Network access to `wttr.in` and `feeds.bbci.co.uk` (only on the first dashboard run of the day, or when the cache is stale).
 
 ### Cache
 
-The cache lives at `~/.cache/powerhelper/hi-there.json` and is refreshed every 24 hours. Delete it manually to force a refresh.
+The dashboard cache lives at `~/.cache/powerhelper/hi-there.json`.
+The game state lives at `~/.cache/powerhelper/hi-there-game.json`.
+Both are refreshed automatically.
 
 ## Resources
 
