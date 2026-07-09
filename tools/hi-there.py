@@ -369,6 +369,14 @@ def fetch_weather(location: str) -> str:
         return f"Weather unavailable ({exc})"
 
 
+def load_dungeon_title() -> str:
+    data = load_json(Path(".data") / "player.json")
+    if data and "dungeon_stats" in data:
+        stats = data["dungeon_stats"]
+        return f"{stats.get('title', 'Squire')} LVL {stats.get('level', 1)}"
+    return ""
+
+
 def fetch_news() -> list[str]:
     try:
         with urllib.request.urlopen(NEWS_URL, timeout=10) as response:
@@ -388,9 +396,13 @@ def fetch_news() -> list[str]:
 
 def render_dashboard(location: str, weather: str, news: list[str], profile_values: dict[str, str] | None = None) -> str:
     meme = random.choice(MEMES)
+    dungeon_title = load_dungeon_title()
+    header = "  ☀️  Good Morning! Here's your daily briefing"
+    if dungeon_title:
+        header += f"  ⚔️ {dungeon_title}"
     lines = [
         "----------------------------------------------------------------",
-        "  ☀️  Good Morning! Here's your daily briefing",
+        header,
         "----------------------------------------------------------------",
     ]
     if profile_values:
