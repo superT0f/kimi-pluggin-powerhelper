@@ -185,7 +185,7 @@ def render_dashboard(location: str, weather: str, news: list[str]) -> str:
 
 
 def cmd_dashboard(args: list[str]) -> str:
-    location = args[0] if args else DEFAULT_LOCATION
+    location = args[0].strip() if args and args[0].strip() else DEFAULT_LOCATION
     cached = load_dashboard_cache()
     if cached:
         weather = cached["weather"]
@@ -283,7 +283,7 @@ def cmd_set_phrase(phrase: str) -> str:
 
 def cmd_start_game(args: list[str]) -> str:
     """Entry point used by the Skill/command to show dashboard + start the game turn."""
-    location = args[0] if args else DEFAULT_LOCATION
+    location = args[0].strip() if args and args[0].strip() else DEFAULT_LOCATION
     dashboard = cmd_dashboard([location])
     state = load_game_state()
     maybe_rotate_day(state)
