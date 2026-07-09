@@ -29,6 +29,11 @@ kimi-pluggin-powerhelper/
 ├── commands/
 │   ├── hello.md
 │   └── hi-there.md
+├── screens/
+│   ├── 1.png
+│   ├── 2.png
+│   ├── 3.png
+│   └── 4.png
 └── tools/
     └── hi-there.py
 ```
@@ -159,6 +164,24 @@ a journey of a thousand miles begins with a single step
 The dashboard cache lives at `~/.cache/powerhelper/hi-there.json`.
 The game state lives at `~/.cache/powerhelper/hi-there-game.json`.
 Both are refreshed automatically.
+
+## Screenshots
+
+### Daily dashboard (`good morning`)
+
+![Dashboard with ASCII meme, weather and news](screens/1.png)
+
+### Phrase of the Day — first-run explanation
+
+![Mini-game explanation](screens/2.png)
+
+### Setting tomorrow's phrase
+
+![Tomorrow's phrase confirmation](screens/3.png)
+
+### Installing from GitHub and verifying the plugin
+
+![Plugin install and info](screens/4.png)
 
 ## Resources
 
