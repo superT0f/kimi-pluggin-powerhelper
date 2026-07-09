@@ -189,6 +189,34 @@ The game state lives at `~/.cache/powerhelper/hi-there-game.json`.
 The player profile values live at `.data/player.json`.
 All are refreshed automatically.
 
+## Dungeon Arena mini-game
+
+A D&D-style arena brawler powered by [python-tcod](https://python-tcod.readthedocs.io/).
+
+### Installation
+
+Dungeon Arena requires `python-tcod`:
+
+```bash
+pip install tcod
+```
+
+### Launch
+
+```text
+/powerhelper:dungeon
+```
+
+Or say:
+
+```text
+play dungeon
+```
+
+### Goal
+
+Survive waves of monsters in a single-room dungeon. Earn XP, level up, and improve your STR, DEX, and CON stats. Stats are stored in `.data/player.json` and displayed in the `hi-there` dashboard.
+
 ## Screenshots
 
 ### Daily dashboard (`good morning`)
