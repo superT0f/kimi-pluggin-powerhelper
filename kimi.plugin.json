@@ -1,0 +1,14 @@
+{
+  "name": "powerhelper",
+  "version": "0.1.0",
+  "description": "A hello-world plugin to learn Kimi Code custom plugins",
+  "skills": "./skills/",
+  "sessionStart": {
+    "skill": "using-powerhelper"
+  },
+  "commands": "./commands/",
+  "interface": {
+    "displayName": "PowerHelper",
+    "shortDescription": "Hello-world plugin for learning Kimi Code plugins"
+  }
+}
