@@ -3,9 +3,8 @@
 A minimal custom plugin for [Kimi Code CLI](https://www.kimi.com/code/) to learn the plugin system. It bundles:
 
 - an **Agent Skill** loaded automatically at session start;
-- a **slash command** you can trigger manually.
-
-No executable code, no external dependencies: this is the simplest possible plugin shape.
+- a **slash command** you can trigger manually;
+- a **daily terminal dashboard** Skill/command (`hi-there`).
 
 ## What is a Kimi Code plugin?
 
@@ -23,10 +22,15 @@ kimi-pluggin-powerhelper/
 ├── README.md
 ├── kimi.plugin.json
 ├── skills/
-│   └── using-powerhelper/
+│   ├── using-powerhelper/
+│   │   └── SKILL.md
+│   └── hi-there/
 │       └── SKILL.md
-└── commands/
-    └── hello.md
+├── commands/
+│   ├── hello.md
+│   └── hi-there.md
+└── tools/
+    └── hi-there.py
 ```
 
 ## Installation
@@ -90,6 +94,42 @@ Check the plugin diagnostics:
 ```
 
 A correct install shows no manifest errors.
+
+## `hi-there` daily dashboard
+
+A terminal dashboard that shows:
+
+- an ASCII meme;
+- the current weather in Combs-la-Ville (customizable);
+- a short list of public news headlines;
+- a 24-hour local cache to avoid repeated network calls.
+
+### Usage
+
+```text
+/powerhelper:hi-there
+```
+
+Or simply say:
+
+```text
+good morning
+```
+
+To use a different location:
+
+```text
+/skill:hi-there Paris
+```
+
+### Requirements
+
+- Python 3 must be installed and on `PATH`.
+- Network access to `wttr.in` and `feeds.bbci.co.uk` (only on the first run of the day, or when the cache is stale).
+
+### Cache
+
+The cache lives at `~/.cache/powerhelper/hi-there.json` and is refreshed every 24 hours. Delete it manually to force a refresh.
 
 ## Resources
 
