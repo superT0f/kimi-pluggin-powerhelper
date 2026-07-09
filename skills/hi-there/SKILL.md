@@ -13,9 +13,18 @@ All output must be in English.
 
 ## Rules
 
-1. Inspect the current game state by reading `~/.cache/powerhelper/hi-there-game.json` via Bash.
-2. Based on the `phase` field, call exactly one of the commands below and print its raw output without modification.
-3. Never add extra commentary beyond the script output.
+1. Check whether a profile question is pending by reading `.data/profile-pending.json` via Bash.
+2. If the pending file exists, the user's reply is a profile answer. Run:
+
+```bash
+python3 "${KIMI_SKILL_DIR}/../tools/hi-there.py" set-profile "$ARGUMENTS"
+```
+
+Print the raw script output without modification.
+
+3. If there is no pending profile question, inspect the game state by reading `~/.cache/powerhelper/hi-there-game.json` via Bash.
+4. Based on the `phase` field, call exactly one of the commands below and print its raw output without modification.
+5. Never add extra commentary beyond the script output.
 
 ## Commands per phase
 

@@ -128,6 +128,29 @@ To use a different location:
 /skill:hi-there Paris
 ```
 
+### Player profile
+
+The first time you run `hi-there`, the assistant asks a few profile questions before showing the dashboard. The questions are driven by `.data/player.md`, so you can add new fields later; the assistant will ask for any new required field on the next run.
+
+Supported field types:
+
+| type | usage |
+|---|---|
+| `text` | free text answer |
+| `number` | numeric answer, can be optional |
+| `yes/no` | boolean answer |
+| `enum:a,b,c` | choose one of the listed options |
+
+Current fields:
+
+- **pseudo** — free text
+- **gender** — free text (LGBTQA+ friendly)
+- **age** — optional number
+- **style** — `serious`, `relaxed` or `casual`
+- **theme** — `light` or `dark`
+
+Your answers are stored locally in `.data/player.json` and shown in the dashboard header.
+
 ### Phrase of the Day game
 
 Each day the Skill asks:
@@ -163,7 +186,8 @@ a journey of a thousand miles begins with a single step
 
 The dashboard cache lives at `~/.cache/powerhelper/hi-there.json`.
 The game state lives at `~/.cache/powerhelper/hi-there-game.json`.
-Both are refreshed automatically.
+The player profile values live at `.data/player.json`.
+All are refreshed automatically.
 
 ## Screenshots
 
