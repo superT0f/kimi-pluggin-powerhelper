@@ -5,3 +5,6 @@ __pycache__/
 *.so
 
 # Local cache is in ~/.cache/powerhelper, not in the repo
+
+# Local game data
+.data/
