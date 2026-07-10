@@ -18,6 +18,31 @@ def test_parse_usage_handles_missing_weekly():
     assert "weekly" not in result
 
 
+USAGE_PANEL_TEXT = """╭ Usage ───────────────────────────────────────────────────────────────╮
+   │ Session usage                                                        │
+   │   kimi-code/kimi-for-coding  input 36.2M  output 142.0k  total 36.3M │
+   │                                                                      │
+   │ Context window                                                       │
+   │   ████░░░░░░░░░░░░░░░░   19.0%  (49.9k / 262.1k)                     │
+   │                                                                      │
+   │ Plan usage                                                           │
+   │   Weekly limit  ████████████░░░░░░░░  59% used  resets in 2d 19h 47m │
+   │   5h limit      ███░░░░░░░░░░░░░░░░░  13% used  resets in 2h 47m     │
+   ╰──────────────────────────────────────────────────────────────────────╯"""
+
+
+def test_parse_usage_extracts_from_usage_panel():
+    result = parse_usage(USAGE_PANEL_TEXT)
+    assert result["weekly"]["pct"] == 59.0
+    assert result["daily"]["pct"] == 13.0
+
+
+def test_parse_usage_prefers_exact_format_when_both_present():
+    text = USAGE_PANEL_TEXT + "\nDaily usage: 15000 / 20000 tokens (75.0%)"
+    result = parse_usage(text)
+    assert result["daily"] == {"used": 15000, "total": 20000, "pct": 75.0}
+
+
 def test_tier_for_pct_below_threshold():
     assert tier_for_pct(69.9) == 0
 

@@ -47,11 +47,13 @@ def ensure_window(state: dict, window: str) -> dict:
 def parse_usage(text: str) -> dict:
     """Extract daily and weekly usage numbers from /usage output."""
     result: dict = {}
-    patterns = [
+
+    # Format 1: explicit lines like "Daily usage: 14500 / 20000 tokens (72.5%)"
+    exact_patterns = [
         (r"daily[^\n]*?(?P<used>\d+)\s*/\s*(?P<total>\d+)[^\n]*?\((?P<pct>\d+(?:\.\d+)?)\s*%?\)", "daily"),
         (r"weekly[^\n]*?(?P<used>\d+)\s*/\s*(?P<total>\d+)[^\n]*?\((?P<pct>\d+(?:\.\d+)?)\s*%?\)", "weekly"),
     ]
-    for pattern, window in patterns:
+    for pattern, window in exact_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
             result[window] = {
@@ -59,6 +61,34 @@ def parse_usage(text: str) -> dict:
                 "total": int(match.group("total")),
                 "pct": float(match.group("pct")),
             }
+
+    # Format 2: Kimi Code CLI /usage panel
+    #   Weekly limit  ████████████░░░░░░░░  59% used  resets in 2d 19h 47m
+    #   5h limit      ███░░░░░░░░░░░░░░░░░  13% used  resets in 2h 47m
+    weekly_match = re.search(
+        r"weekly\s+limit\s+\S+\s+(?P<pct>\d+(?:\.\d+)?)%\s+used",
+        text,
+        re.IGNORECASE,
+    )
+    if weekly_match:
+        result.setdefault("weekly", {
+            "used": 0,
+            "total": 0,
+            "pct": float(weekly_match.group("pct")),
+        })
+
+    short_match = re.search(
+        r"(?P<hours>\d+)h\s+limit\s+\S+\s+(?P<pct>\d+(?:\.\d+)?)%\s+used",
+        text,
+        re.IGNORECASE,
+    )
+    if short_match:
+        result.setdefault("daily", {
+            "used": 0,
+            "total": 0,
+            "pct": float(short_match.group("pct")),
+        })
+
     return result
 
 
@@ -153,7 +183,9 @@ def main() -> int:
         usage = parse_usage(text)
         if not usage:
             print("Could not parse /usage output.")
-            print("Expected something like: 'Daily usage: 12345 / 20000 tokens (61.7%)'")
+            print("Expected something like:")
+            print("  'Daily usage: 12345 / 20000 tokens (61.7%)'")
+            print("or the Kimi Code CLI /usage panel with 'Weekly limit ... 59% used'.")
             return 0
         state = load_state()
         result = compute_alerts(usage, state)
