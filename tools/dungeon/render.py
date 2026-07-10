@@ -20,31 +20,29 @@ from tools.dungeon.constants import (
 )
 
 
-def _find_tileset() -> str | None:
-    """Locate the tcod bundled tileset."""
-    import tcod as _tcod
-
-    pkg_root = Path(_tcod.__file__).parent
-    candidate = pkg_root / ".." / "dejavu10x10_gs_tc.png"
-    if candidate.exists():
-        return str(candidate.resolve())
-    for parent in pkg_root.parents:
-        for sub in ("dejavu10x10_gs_tc.png", "data/dejavu10x10_gs_tc.png"):
-            candidate = parent / sub
-            if candidate.exists():
-                return str(candidate.resolve())
+def _find_font() -> Path | None:
+    """Locate a suitable monospace TrueType font on the system."""
+    candidates = [
+        Path("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"),
+        Path("/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"),
+        Path("/usr/share/fonts/truetype/freefont/FreeMono.ttf"),
+        Path("/System/Library/Fonts/Menlo.ttc"),  # macOS
+        Path("C:/Windows/Fonts/consola.ttf"),  # Windows
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
     return None
 
 
-def setup() -> tuple[tcod.context.Context, tcod.Console]:
+def setup() -> tuple[tcod.context.Context, tcod.console.Console]:
     """Create tcod context and root console."""
-    tileset_path = _find_tileset()
-    if tileset_path:
-        tileset = tcod.tileset.load_tilesheet(
-            tileset_path,
-            32,
-            8,
-            tcod.tileset.CHARMAP_TCOD,
+    font_path = _find_font()
+    if font_path:
+        tileset = tcod.tileset.load_truetype_font(
+            str(font_path),
+            tile_width=10,
+            tile_height=16,
         )
     else:
         tileset = tcod.tileset.load_tilesheet(
@@ -60,11 +58,11 @@ def setup() -> tuple[tcod.context.Context, tcod.Console]:
         title="PowerHelper Dungeon Arena",
         vsync=True,
     )
-    root = tcod.Console(SCREEN_WIDTH, SCREEN_HEIGHT, order="F")
+    root = tcod.console.Console(SCREEN_WIDTH, SCREEN_HEIGHT, order="F")
     return context, root
 
 
-def draw_map(console: tcod.Console, dungeon: list[list[int]]) -> None:
+def draw_map(console: tcod.console.Console, dungeon: list[list[int]]) -> None:
     for y in range(MAP_HEIGHT):
         for x in range(MAP_WIDTH):
             tile = dungeon[y][x]
@@ -74,14 +72,14 @@ def draw_map(console: tcod.Console, dungeon: list[list[int]]) -> None:
                 console.print(x, y, ".", fg=COLOR_DARK_GROUND)
 
 
-def draw_entities(console: tcod.Console, entities: list) -> None:
+def draw_entities(console: tcod.console.Console, entities: list) -> None:
     for entity in entities:
         if entity.hp > 0:
             console.print(entity.x, entity.y, entity.glyph, fg=entity.color)
 
 
 def draw_ui(
-    console: tcod.Console,
+    console: tcod.console.Console,
     player,
     wave: int,
     messages: list[str],
@@ -106,7 +104,7 @@ def draw_ui(
 
 def render_all(
     context: tcod.context.Context,
-    root: tcod.Console,
+    root: tcod.console.Console,
     dungeon: list[list[int]],
     entities: list,
     player,

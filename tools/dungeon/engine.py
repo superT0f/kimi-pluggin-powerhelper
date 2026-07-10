@@ -134,15 +134,15 @@ def handle_input(
 
     key = event.sym
     dx, dy = 0, 0
-    if key in (tcod.event.K_UP, tcod.event.K_k, tcod.event.K_KP_8):
+    if key in (tcod.event.KeySym.UP, tcod.event.KeySym.K, tcod.event.KeySym.KP_8):
         dy = -1
-    elif key in (tcod.event.K_DOWN, tcod.event.K_j, tcod.event.K_KP_2):
+    elif key in (tcod.event.KeySym.DOWN, tcod.event.KeySym.J, tcod.event.KeySym.KP_2):
         dy = 1
-    elif key in (tcod.event.K_LEFT, tcod.event.K_h, tcod.event.K_KP_4):
+    elif key in (tcod.event.KeySym.LEFT, tcod.event.KeySym.H, tcod.event.KeySym.KP_4):
         dx = -1
-    elif key in (tcod.event.K_RIGHT, tcod.event.K_l, tcod.event.K_KP_6):
+    elif key in (tcod.event.KeySym.RIGHT, tcod.event.KeySym.L, tcod.event.KeySym.KP_6):
         dx = 1
-    elif key == tcod.event.K_ESCAPE:
+    elif key == tcod.event.KeySym.ESCAPE:
         raise SystemExit
     else:
         return False
