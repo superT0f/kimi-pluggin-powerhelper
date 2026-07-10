@@ -7,6 +7,13 @@
     "skill": "using-powerhelper"
   },
   "commands": "./commands/",
+  "hooks": [
+    {
+      "event": "Stop",
+      "command": "python3 ./tools/quota.py remind",
+      "timeout": 5
+    }
+  ],
   "interface": {
     "displayName": "PowerHelper",
     "shortDescription": "Hello-world plugin for learning Kimi Code plugins"
