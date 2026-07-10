@@ -1,5 +1,14 @@
 from pathlib import Path
-from tools.quota import parse_usage, compute_alerts, tier_for_pct, reminder, session_check, ALERT_FILE
+from tools.quota import (
+    parse_usage,
+    compute_alerts,
+    tier_for_pct,
+    reminder,
+    session_check,
+    ALERT_FILE,
+    parse_reset_times,
+    format_summary,
+)
 
 
 USAGE_TEXT = """Daily usage: 14500 / 20000 tokens (72.5%)
@@ -96,3 +105,28 @@ def test_session_check_warns_on_active_alert():
 
 def test_session_check_silent_when_no_alert():
     assert session_check({}) == ""
+
+
+def test_parse_reset_times_extracts_weekly_and_short_term():
+    resets = parse_reset_times(USAGE_PANEL_TEXT)
+    assert resets["weekly"] == "2d 19h 47m"
+    assert resets["daily"] == "2h 47m"
+
+
+def test_format_summary_shows_graphic_bars_and_remaining_pct():
+    usage = parse_usage(USAGE_PANEL_TEXT)
+    resets = parse_reset_times(USAGE_PANEL_TEXT)
+    summary = format_summary(usage, resets)
+    assert "Short-term" in summary
+    assert "Weekly" in summary
+    assert "13.0% used" in summary
+    assert "59.0% used" in summary
+    assert "57.0% remaining until 70% warning" in summary
+    assert "11.0% remaining until 70% warning" in summary
+    assert "2h 47m" in summary
+    assert "2d 19h 47m" in summary
+
+
+def test_format_summary_handles_missing_data():
+    summary = format_summary({}, {})
+    assert "No quota data" in summary

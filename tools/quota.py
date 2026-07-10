@@ -92,6 +92,52 @@ def parse_usage(text: str) -> dict:
     return result
 
 
+def parse_reset_times(text: str) -> dict:
+    """Extract reset delays for each quota window from /usage output."""
+    result: dict = {}
+    patterns = [
+        (r"weekly\s+limit\s+\S+\s+\d+(?:\.\d+)?%\s+used\s+resets\s+in\s+(?P<reset>[0-9dhms\s]+)", "weekly"),
+        (r"(?P<hours>\d+)h\s+limit\s+\S+\s+\d+(?:\.\d+)?%\s+used\s+resets\s+in\s+(?P<reset>[0-9dhms\s]+)", "daily"),
+    ]
+    for pattern, window in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            result[window] = match.group("reset").strip()
+    return result
+
+
+def format_summary(usage: dict, resets: dict) -> str:
+    """Return a graphical summary of quota usage."""
+    if not usage:
+        return "📊 No quota data available."
+
+    lines = ["📊 Quota Summary", ""]
+    labels = {
+        "daily": "Short-term (5h)",
+        "weekly": "Weekly",
+    }
+    bar_width = 20
+
+    for window in ("daily", "weekly"):
+        data = usage.get(window)
+        if not data:
+            continue
+        pct = data["pct"]
+        label = labels.get(window, window.capitalize())
+        filled = int(round(pct / 100 * bar_width))
+        bar = "█" * filled + "░" * (bar_width - filled)
+        remaining_to_warning = max(0.0, FIRST_ALERT_PCT - pct)
+        remaining_to_limit = max(0.0, 100.0 - pct)
+        reset = resets.get(window, "unknown")
+        lines.append(f"{label:<16} {bar}  {pct:.1f}% used")
+        lines.append(f"  • {remaining_to_warning:.1f}% remaining until 70% warning")
+        lines.append(f"  • {remaining_to_limit:.1f}% remaining until 100% limit")
+        lines.append(f"  • Resets in {reset}")
+        lines.append("")
+
+    return "\n".join(lines).rstrip()
+
+
 def tier_for_pct(pct: float) -> int:
     """Return the highest alert tier reached by pct, or 0 if below first alert."""
     if pct < FIRST_ALERT_PCT:
@@ -169,7 +215,7 @@ def session_check(state: dict | None = None) -> str:
 
 def main() -> int:
     if len(sys.argv) < 2:
-        print("Usage: quota.py <check|remind|session>")
+        print("Usage: quota.py <check|summary|remind|session>")
         return 1
 
     command = sys.argv[1]
@@ -191,6 +237,18 @@ def main() -> int:
         result = compute_alerts(usage, state)
         save_state(state)
         print(result)
+    elif command == "summary":
+        text = " ".join(args)
+        if not text:
+            print("Please paste the output of /usage after the command.")
+            return 0
+        usage = parse_usage(text)
+        resets = parse_reset_times(text)
+        if not usage:
+            print("Could not parse /usage output.")
+            print("Expected the Kimi Code CLI /usage panel with 'Weekly limit ... 59% used'.")
+            return 0
+        print(format_summary(usage, resets))
     elif command == "remind":
         msg = reminder()
         if msg:
