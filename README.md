@@ -37,7 +37,11 @@ kimi-pluggin-powerhelper/
 │   ├── 1.png
 │   ├── 2.png
 │   ├── 3.png
-│   └── 4.png
+│   ├── 4.png
+│   └── quota-check/
+│       ├── 1.png
+│       ├── 2.png
+│       └── 3.png
 └── tools/
     ├── hi-there.py
     └── quota.py
@@ -104,6 +108,15 @@ Check the plugin diagnostics:
 ```
 
 A correct install shows no manifest errors.
+
+## Commands overview
+
+| Command | Trigger | What it does |
+|---|---|---|
+| `/powerhelper:hello` | `hello`, `hi`, `salut` | Greets you with the plugin's hello-world message. |
+| `/powerhelper:hi-there` | `good morning` | Shows the daily terminal dashboard (weather, news, ASCII meme, Phrase of the Day). |
+| `/powerhelper:dungeon` | `play dungeon` | Launches the `tcod` terminal arena mini-game. |
+| `/powerhelper:quota` | `quota`, `usage` | Parses `/usage` output and shows a graphical quota summary + threshold alerts. |
 
 ## `hi-there` daily dashboard + Phrase of the Day game
 
@@ -224,7 +237,7 @@ Survive waves of monsters in a single-room dungeon. Earn XP, level up, and impro
 
 ## Quota Watcher
 
-Monitor your Kimi Code CLI token quota and get alerted when you cross 70%, then every 5%.
+Keep an eye on your Kimi Code CLI token budget. PowerHelper parses the output of `/usage`, shows a compact graphical summary, and alerts you when you cross the 70% warning line, then again at every 5% step (75%, 80%, 85% …).
 
 ### Usage
 
@@ -234,26 +247,61 @@ Run in Kimi Code CLI:
 /usage
 ```
 
-Then paste the output:
+Then paste the output after the slash command:
 
 ```text
-/powerhelper:quota Daily usage: 14500 / 20000 tokens (72.5%)
+/powerhelper:quota ╭ Usage ───────────────────────────────────────────────╮
+...
 ```
 
-Or simply say:
+Or simply say a keyword and the assistant will ask for the `/usage` output:
 
 ```text
 quota
 ```
 
-The assistant will ask for your `/usage` output and alert you if a new threshold is reached.
+### What you get back
 
-Quota alert history is stored in `.data/quota-alerts.json`.
+A visual summary for both quota windows with usage bars, headroom before the 70% warning, headroom before the 100% limit, and the time until the next reset:
+
+```text
+📊 Quota Summary
+
+Short-term (5h)  ███░░░░░░░░░░░░░░░░░  17.0% used
+  • 53.0% remaining until 70% warning
+  • 83.0% remaining until 100% limit
+  • Resets in 2h 26m
+
+Weekly           ████████████░░░░░░░░  60.0% used
+  • 10.0% remaining until 70% warning
+  • 40.0% remaining until 100% limit
+  • Resets in 2d 19h 26m
+```
+
+If a new threshold is crossed, an alert is also printed and recorded.
 
 ### Automatic reminders
 
-- On session start, PowerHelper warns you if a quota alert is still active.
-- Every 10 turns, a gentle tip reminds you to run `/usage` and check your quota.
+- **Session start**: if a quota alert is still active, PowerHelper reminds you immediately.
+- **Every 10 turns**: a gentle tip reminds you to run `/usage` and check your quota.
+
+### Storage
+
+Quota alert history and turn counters are stored in `.data/quota-alerts.json`.
+
+### Screenshots
+
+#### Invoking the quota command
+
+![Invoking /powerhelper:quota](screens/quota-check/1.png)
+
+#### Pasting the `/usage` panel when asked
+
+![Pasting /usage output](screens/quota-check/2.png)
+
+#### Graphical quota summary
+
+![Quota summary output](screens/quota-check/3.png)
 
 ## Screenshots
 
@@ -272,6 +320,20 @@ Quota alert history is stored in `.data/quota-alerts.json`.
 ### Installing from GitHub and verifying the plugin
 
 ![Plugin install and info](screens/4.png)
+
+### Quota Watcher
+
+#### Invoking the quota command
+
+![Invoking /powerhelper:quota](screens/quota-check/1.png)
+
+#### Pasting the `/usage` panel when asked
+
+![Pasting /usage output](screens/quota-check/2.png)
+
+#### Graphical quota summary
+
+![Quota summary output](screens/quota-check/3.png)
 
 ## Resources
 
