@@ -4,7 +4,8 @@ A minimal custom plugin for [Kimi Code CLI](https://www.kimi.com/code/) to learn
 
 - an **Agent Skill** loaded automatically at session start;
 - a **slash command** you can trigger manually;
-- a **daily terminal dashboard** Skill/command (`hi-there`).
+- a **daily terminal dashboard** Skill/command (`hi-there`);
+- a **quota watcher** that alerts on token usage thresholds.
 
 ## What is a Kimi Code plugin?
 
@@ -24,18 +25,22 @@ kimi-pluggin-powerhelper/
 ├── skills/
 │   ├── using-powerhelper/
 │   │   └── SKILL.md
-│   └── hi-there/
+│   ├── hi-there/
+│   │   └── SKILL.md
+│   └── quota-watch/
 │       └── SKILL.md
 ├── commands/
 │   ├── hello.md
-│   └── hi-there.md
+│   ├── hi-there.md
+│   └── quota.md
 ├── screens/
 │   ├── 1.png
 │   ├── 2.png
 │   ├── 3.png
 │   └── 4.png
 └── tools/
-    └── hi-there.py
+    ├── hi-there.py
+    └── quota.py
 ```
 
 ## Installation
@@ -216,6 +221,39 @@ play dungeon
 ### Goal
 
 Survive waves of monsters in a single-room dungeon. Earn XP, level up, and improve your STR, DEX, and CON stats. Stats are stored in `.data/player.json` and displayed in the `hi-there` dashboard.
+
+## Quota Watcher
+
+Monitor your Kimi Code CLI token quota and get alerted when you cross 70%, then every 5%.
+
+### Usage
+
+Run in Kimi Code CLI:
+
+```text
+/usage
+```
+
+Then paste the output:
+
+```text
+/powerhelper:quota Daily usage: 14500 / 20000 tokens (72.5%)
+```
+
+Or simply say:
+
+```text
+quota
+```
+
+The assistant will ask for your `/usage` output and alert you if a new threshold is reached.
+
+Quota alert history is stored in `.data/quota-alerts.json`.
+
+### Automatic reminders
+
+- On session start, PowerHelper warns you if a quota alert is still active.
+- Every 10 turns, a gentle tip reminds you to run `/usage` and check your quota.
 
 ## Screenshots
 
