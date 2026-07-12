@@ -3,6 +3,14 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.pytest_cache/
+
+# Virtual environments
+.venv/
+.venv-*/
+
+# Session-local files
+session.txt
 
 # Local cache is in ~/.cache/powerhelper, not in the repo
 

@@ -1,7 +1,7 @@
 {
   "name": "powerhelper",
   "version": "0.1.0",
-  "description": "A hello-world plugin to learn Kimi Code custom plugins",
+  "description": "A hello-world plugin to learn Kimi Code custom plugins, now with rtk CLI proxy integration",
   "skills": "./skills/",
   "sessionStart": {
     "skill": "using-powerhelper"
@@ -16,6 +16,6 @@
   ],
   "interface": {
     "displayName": "PowerHelper",
-    "shortDescription": "Hello-world plugin for learning Kimi Code plugins"
+    "shortDescription": "Hello-world plugin for learning Kimi Code plugins, with rtk CLI proxy"
   }
 }

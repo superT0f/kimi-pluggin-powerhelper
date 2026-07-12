@@ -5,7 +5,8 @@ A minimal custom plugin for [Kimi Code CLI](https://www.kimi.com/code/) to learn
 - an **Agent Skill** loaded automatically at session start;
 - a **slash command** you can trigger manually;
 - a **daily terminal dashboard** Skill/command (`hi-there`);
-- a **quota watcher** that alerts on token usage thresholds.
+- a **quota watcher** that alerts on token usage thresholds;
+- an **rtk CLI proxy** integration to keep noisy shell output compact.
 
 ## What is a Kimi Code plugin?
 
@@ -27,12 +28,15 @@ kimi-pluggin-powerhelper/
 │   │   └── SKILL.md
 │   ├── hi-there/
 │   │   └── SKILL.md
-│   └── quota-watch/
+│   ├── quota-watch/
+│   │   └── SKILL.md
+│   └── rtk/
 │       └── SKILL.md
 ├── commands/
 │   ├── hello.md
 │   ├── hi-there.md
-│   └── quota.md
+│   ├── quota.md
+│   └── rtk.md
 ├── screens/
 │   ├── 1.png
 │   ├── 2.png
@@ -117,6 +121,7 @@ A correct install shows no manifest errors.
 | `/powerhelper:hi-there` | `good morning` | Shows the daily terminal dashboard (weather, news, ASCII meme, Phrase of the Day). |
 | `/powerhelper:dungeon` | `play dungeon` | Launches the `tcod` terminal arena mini-game. |
 | `/powerhelper:quota` | `quota`, `usage` | Parses `/usage` output and shows a graphical quota summary + threshold alerts. |
+| `/powerhelper:rtk` | `rtk <command>` | Runs a shell command through the rtk proxy for compact, context-friendly output. |
 
 ## `hi-there` daily dashboard + Phrase of the Day game
 
@@ -206,6 +211,43 @@ The dashboard cache lives at `~/.cache/powerhelper/hi-there.json`.
 The game state lives at `~/.cache/powerhelper/hi-there-game.json`.
 The player profile values live at `.data/player.json`.
 All are refreshed automatically.
+
+## RTK CLI proxy integration
+
+PowerHelper integrates [rtk](https://github.com/rtk-ai/rtk) to keep long or noisy shell output compact before it enters the Kimi Code context window.
+
+### Usage
+
+Run any command through rtk with the slash command:
+
+```text
+/powerhelper:rtk ls -la
+```
+
+Or invoke the `rtk` skill implicitly by asking for a command that usually produces a lot of output:
+
+```text
+show me the git log
+```
+
+The assistant will use `rtk git log` instead of raw `git log`.
+
+### Supported mappings
+
+| Native | RTK equivalent |
+|---|---|
+| `ls`, `tree`, `find` | `rtk ls`, `rtk tree`, `rtk find` |
+| `git ...` | `rtk git ...` |
+| `npm run`, `pnpm`, `npx` | `rtk npm run`, `rtk pnpm`, `rtk npx` |
+| `pytest`, `jest`, `vitest` | `rtk pytest`, `rtk jest`, `rtk vitest` |
+| `tsc`, `eslint`, `prettier` | `rtk tsc`, `rtk lint`, `rtk prettier` |
+| `docker`, `kubectl` | `rtk docker`, `rtk kubectl` |
+| arbitrary long command | `rtk summary "<command>"` |
+| full raw output | `rtk run "<command>"` |
+
+### Requirements
+
+- rtk must be installed and available at `/home/tof/.local/bin/rtk` (or on `PATH`).
 
 ## Dungeon Arena mini-game
 
